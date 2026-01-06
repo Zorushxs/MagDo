@@ -68,12 +68,12 @@ def obtener_detalles_monitor(indice_monitor):
 
 # --- Uso del script ---
 try:
-    monitor = 1;
-    monitores = obtener_detalles_monitor(monitor) # '1' para el segundo monitor
+    indice_monitor = 1;
+    monitor = obtener_detalles_monitor(indice_monitor) # '1' para el segundo monitor
 
-    if monitores:
-        print(f"Monitor {monitores['monitor_id']} - Escala: {monitores['escala']}%")
-        print(f"Físico: {monitores['ancho_físico']}x{monitores['alto_físico']}")
-        print(f"Lógico: {monitores['ancho_lógico']}x{monitores['alto_lógico']}")
+    if monitor:
+        print(f"Monitor {monitor['monitor_id']} - Escala: {monitor['escala']}%")
+        print(f"Físico: {monitor['ancho_físico']}x{monitor['alto_físico']}")
+        print(f"Lógico: {monitor['ancho_lógico']}x{monitor['alto_lógico']}")
 except IndexError as e:
     print(e)
