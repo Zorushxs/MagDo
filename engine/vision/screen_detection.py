@@ -39,7 +39,7 @@ def obtener_detalles_monitor(indice_monitor):
     CMPFUNC = ctypes.WINFUNCTYPE(ctypes.c_bool, wintypes.HANDLE, wintypes.HANDLE, ctypes.POINTER(wintypes.RECT), wintypes.LPARAM)
     user32.EnumDisplayMonitors(None, None, CMPFUNC(callback), 0)
 
-    print(f"{monitores}")
+    #print(f"{monitores}")
 
     if 0 <= indice_monitor < len(monitores):
         monitor = monitores[indice_monitor]
