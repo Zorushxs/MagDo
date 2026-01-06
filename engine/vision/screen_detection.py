@@ -1,36 +1,79 @@
 import ctypes
+from ctypes import wintypes
 
-def configurar_dpi():
-    """Avisa a Windows que use píxeles reales para evitar desenfoque."""
-    try:
-        # Intentamos usar shcore (Win 8.1+)
-        ctypes.windll.shcore.SetProcessDpiAwareness(1)
-    except Exception:
-        # Fallback para sistemas más antiguos (Win 7/8)
-        ctypes.windll.user32.SetProcessDPIAware()
+class MONITORINFO(ctypes.Structure):
+    _fields_ = [
+        ("cbSize", wintypes.DWORD),
+        ("rcMonitor", wintypes.RECT),
+        ("rcWork", wintypes.RECT),
+        ("dwFlags", wintypes.DWORD),
+    ]
 
-def obtener_datos_pantalla():
 
-    configurar_dpi()
+def obtener_detalles_monitor(indice_monitor):
 
-    # 1. Avisar a Windows que queremos los píxeles reales (DPI Aware)
+    # 1. Avisar a Windows que queremos los píxeles reales
     ctypes.windll.shcore.SetProcessDpiAwareness(1)
 
     user32 = ctypes.windll.user32
+    shcore = ctypes.windll.shcore
+    monitores = []
 
-    # 2. Obtener resolución física real (píxeles totales del panel)
-    ancho_real = user32.GetSystemMetrics(0)
-    alto_real = user32.GetSystemMetrics(1)
+    # Callback para encontrar los "Handles" (identificadores únicos) de cada monitor
+    def callback(hMonitor, hdcMonitor, lprcMonitor, dwData):
+        # Se inicializa el constructor
+        info = MONITORINFO()
+        # Se asigna la longitud de la estructura de datos para C
+        info.cbSize = ctypes.sizeof(MONITORINFO)
 
-    # 3. Obtener el factor de escala (ej: 125 para 125%)
-    escala = ctypes.windll.shcore.GetScaleFactorForDevice(0)
+        # Revisa si hay datos usables
+        if user32.GetMonitorInfoW(hMonitor, ctypes.byref(info)):
+            # Guardamos el identificador (hMonitor) y sus coordenadas
+            monitores.append({
+                "handle": hMonitor,
+                "rect": info.rcMonitor
+            })
+        return True
 
-    # 4. Calcular resolución lógica (la que verías sin escalado)
-    ancho_logico = int(ancho_real / (escala / 100))
-    alto_logico = int(alto_real / (escala / 100))
+    # Contrato de Traducción, se define cómo deben comunicarse los bits entre Python y Windows
+    CMPFUNC = ctypes.WINFUNCTYPE(ctypes.c_bool, wintypes.HANDLE, wintypes.HANDLE, ctypes.POINTER(wintypes.RECT), wintypes.LPARAM)
+    user32.EnumDisplayMonitors(None, None, CMPFUNC(callback), 0)
 
-    print(f"Resolución Física: {ancho_real}x{alto_real}")
-    print(f"Escalado: {escala}%")
-    print(f"Resolución Lógica: {ancho_logico}x{alto_logico}")
+    print(f"{monitores}")
 
-obtener_datos_pantalla()
+    if 0 <= indice_monitor < len(monitores):
+        monitor = monitores[indice_monitor]
+
+        # --- CÁLCULO DE RESOLUCIÓN ---
+        ancho_real = monitor["rect"].right - monitor["rect"].left
+        alto_real = monitor["rect"].bottom - monitor["rect"].top
+
+        # --- CÁLCULO DE ESCALA (DPI) ---
+        # Usamos el 'handle' específico de ese monitor
+        escala = ctypes.c_uint()
+        shcore.GetScaleFactorForMonitor(monitor["handle"], ctypes.byref(escala))
+
+        factor = escala.value
+
+        return {
+            "monitor_id": indice_monitor,
+            "ancho_físico": ancho_real,
+            "alto_físico": alto_real,
+            "escala": factor,
+            "ancho_lógico": int(ancho_real / (factor / 100)),
+            "alto_lógico": int(alto_real / (factor / 100))
+        }
+    else:
+        raise IndexError(f"Monitor con índice {indice_monitor} no encontrado. Detectados: {len(monitores)}")
+
+# --- Uso del script ---
+try:
+    monitor = 1;
+    hasMonitorDetails = obtener_detalles_monitor(monitor) # '1' para el segundo monitor
+
+    if hasMonitorDetails:
+        print(f"Monitor {hasMonitorDetails['monitor_id']} - Escala: {hasMonitorDetails['escala']}%")
+        print(f"Físico: {hasMonitorDetails['ancho_físico']}x{hasMonitorDetails['alto_físico']}")
+        print(f"Lógico: {hasMonitorDetails['ancho_lógico']}x{hasMonitorDetails['alto_lógico']}")
+except IndexError as e:
+    print(e)
