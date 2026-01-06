@@ -67,13 +67,13 @@ def obtener_detalles_monitor(indice_monitor):
         raise IndexError(f"Monitor con índice {indice_monitor} no encontrado. Detectados: {len(monitores)}")
 
 # --- Uso del script ---
-try:
-    indice_monitor = 1;
-    monitor = obtener_detalles_monitor(indice_monitor) # '1' para el segundo monitor
-
-    if monitor:
-        print(f"Monitor {monitor['monitor_id']} - Escala: {monitor['escala']}%")
-        print(f"Físico: {monitor['ancho_físico']}x{monitor['alto_físico']}")
-        print(f"Lógico: {monitor['ancho_lógico']}x{monitor['alto_lógico']}")
-except IndexError as e:
-    print(e)
+#   try:
+#       indice_monitor = 1;
+#       monitor = obtener_detalles_monitor(indice_monitor) # '1' para el segundo monitor
+#
+#       if monitor:
+#           print(f"Monitor {monitor['monitor_id']} - Escala: {monitor['escala']}%")
+#           print(f"Físico: {monitor['ancho_físico']}x{monitor['alto_físico']}")
+#           print(f"Lógico: {monitor['ancho_lógico']}x{monitor['alto_lógico']}")
+#   except IndexError as e:
+#       print(e)
