@@ -38,7 +38,6 @@ def to_gray(alto_fisico, img):
         os.makedirs("screenshots/gray")
 
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
     save_Path = f"screenshots/gray/{alto_fisico}_screenshot.png"
     cv2.imwrite(save_Path, img)
 
@@ -53,18 +52,24 @@ def crop_box(img, x, y, w, h):
     """
     return img[y:y+h, x:x+w]
 
-# ---------- 4) Ejemplo de uso ----------
+# ---------- 4) Reeditar imagen debug ----------------
+def gray_debug(alto_fisico, img, x, y, w, h):
+    cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    save_Path = f"screenshots/gray_debug/{alto_fisico}_screenshot.png"
+    cv2.imwrite(save_Path, img)
+
+# ---------- 5) Ejemplo de uso ----------
 if __name__ == "__main__":
 
-    print("Por favor, introduce el número de monitor:")
-    entrada = input() # Captura la entrada como un string (ej: "1")
-    indice_monitor = int(entrada)
+#    print("Por favor, introduce el número de monitor:")
+#    entrada = input() # Captura la entrada como un string (ej: "1")
+#    indice_monitor = int(entrada)
 
-    monitor = obtener_detalles_monitor(indice_monitor)
+    monitor = obtener_detalles_monitor(0)
     alto_fisico = monitor['alto_físico']
 
     # Capturamos la pantalla completa
-    screen = capture_screen(alto_fisico, indice_monitor + 1)
+    screen = capture_screen(alto_fisico, 0 + 1)
 
     # Convertimos a gris
     gray_screen = to_gray(alto_fisico, screen)
@@ -73,7 +78,13 @@ if __name__ == "__main__":
     boxes = BOXES_CONFIG[alto_fisico]
 
     # Iteramos el objeto completo
-    for row_name, columns in boxes.items():
+    for i, (row_name, columns) in enumerate(boxes.items()):
+        if i == 0:
+            debug_img = gray_screen.copy()
+            if not os.path.exists("screenshots/gray_debug"):
+                os.makedirs("screenshots/gray_debug")
+            save_Path = f"screenshots/gray_debug/{alto_fisico}_screenshot.png"
+            cv2.imwrite(save_Path, debug_img)
 
         subfolder = f"boxes/{alto_fisico}/{row_name}"
 
@@ -84,8 +95,8 @@ if __name__ == "__main__":
             x, y, w, h = box_obj.coords
 
             crop = crop_box(gray_screen, x, y, w, h)
+            gray_debug(alto_fisico, debug_img, x, y, w, h)
 
             save_Path = f"{subfolder}/{row_name}_{col_name}.png"
 
             cv2.imwrite(save_Path, crop)
-            print(f"{alto_fisico} {row_name} {col_name} guardado como {col_name}.png")

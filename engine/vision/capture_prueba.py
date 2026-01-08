@@ -43,7 +43,7 @@ data = pytesseract.image_to_data(
 )
 
 anchor = None
-target_word = "SASTREMAGO"
+target_word = "ZAPATEROMAGO"
 
 for i, text in enumerate(data["text"]):
     # Limpiar caracteres no alfanuméricos y pasar a mayúsculas
@@ -59,7 +59,7 @@ for i, text in enumerate(data["text"]):
         break
 
 if anchor is None:
-     raise RuntimeError("❌ No se encontró SASTREMAGO")
+     raise RuntimeError("❌ No se encontró ZAPATEROMAGO")
 
 # # ---------- 3.1) LISTAR TODAS LAS PALABRAS DETECTADAS ----------
 # data = pytesseract.image_to_data(

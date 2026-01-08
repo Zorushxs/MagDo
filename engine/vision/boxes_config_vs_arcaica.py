@@ -1,0 +1,163 @@
+# Diccionario anidado
+class Box:
+    def __init__(self, x, y, w, h):
+        self.coords = (x, y, w, h)
+        self.x, self.y, self.w, self.h = x, y, w, h
+
+# --- VALORES GLOBALES DE AFINADO ---
+# 1440
+COLX0_1440 = 860
+COLX1_1440 = 935
+COLX2_1440 = 1033
+COLX3_1440 = 1251
+COLX4_1440 = 1350
+COLX5_1440 = 1398
+COLX6_1440 = 1440
+
+YPLUS_1440 = 45
+WPLUSCOLX2_1440 = 148
+WPLUSCOLX4_1440 = 22
+WPLUSCOLX56_1440 = 28
+
+Y_1440, W_1440, H_1440 = 480, 70, 32
+
+# 1080
+X_1080, Y_1080, W_1080, H_1080 = 860, 650, 500, 25
+
+BOXES_CONFIG = {
+    1440: {
+        "ROW0": {
+            "COL0": Box(COLX0_1440, Y_1440, W_1440, H_1440),
+            "COL1": Box(COLX1_1440, Y_1440, W_1440, H_1440),
+            "COL2": Box(COLX2_1440, Y_1440, W_1440 + WPLUSCOLX2_1440, H_1440),
+            "COL3": Box(COLX3_1440, Y_1440, W_1440, H_1440),
+            "COL4": Box(COLX4_1440, Y_1440, W_1440 - WPLUSCOLX4_1440, H_1440),
+            "COL5": Box(COLX5_1440, Y_1440, W_1440 - WPLUSCOLX56_1440, H_1440),
+            "COL6": Box(COLX6_1440, Y_1440, W_1440 - WPLUSCOLX56_1440, H_1440)
+        },
+        "ROW1": {
+            "COL0": Box(COLX0_1440, Y_1440 + YPLUS_1440, W_1440, H_1440),
+            "COL1": Box(COLX1_1440, Y_1440 + YPLUS_1440, W_1440, H_1440),
+            "COL2": Box(COLX2_1440, Y_1440 + YPLUS_1440, W_1440 + WPLUSCOLX2_1440, H_1440),
+            "COL3": Box(COLX3_1440, Y_1440 + YPLUS_1440, W_1440, H_1440),
+            "COL4": Box(COLX4_1440, Y_1440 + YPLUS_1440, W_1440 - WPLUSCOLX4_1440, H_1440),
+            "COL5": Box(COLX5_1440, Y_1440 + YPLUS_1440, W_1440 - WPLUSCOLX56_1440, H_1440),
+            "COL6": Box(COLX6_1440, Y_1440 + YPLUS_1440, W_1440 - WPLUSCOLX56_1440, H_1440)
+        },
+        "ROW2": {
+            "COL0": Box(COLX0_1440, Y_1440 + (2 * YPLUS_1440), W_1440, H_1440),
+            "COL1": Box(COLX1_1440, Y_1440 + (2 * YPLUS_1440), W_1440, H_1440),
+            "COL2": Box(COLX2_1440, Y_1440 + (2 * YPLUS_1440), W_1440 + WPLUSCOLX2_1440, H_1440),
+            "COL3": Box(COLX3_1440, Y_1440 + (2 * YPLUS_1440), W_1440, H_1440),
+            "COL4": Box(COLX4_1440, Y_1440 + (2 * YPLUS_1440), W_1440 - WPLUSCOLX4_1440, H_1440),
+            "COL5": Box(COLX5_1440, Y_1440 + (2 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440),
+            "COL6": Box(COLX6_1440, Y_1440 + (2 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440)
+        },
+        "ROW3": {
+            "COL0": Box(COLX0_1440, Y_1440 + (3 * YPLUS_1440), W_1440, H_1440),
+            "COL1": Box(COLX1_1440, Y_1440 + (3 * YPLUS_1440), W_1440, H_1440),
+            "COL2": Box(COLX2_1440, Y_1440 + (3 * YPLUS_1440), W_1440 + WPLUSCOLX2_1440, H_1440),
+            "COL3": Box(COLX3_1440, Y_1440 + (3 * YPLUS_1440), W_1440, H_1440),
+            "COL4": Box(COLX4_1440, Y_1440 + (3 * YPLUS_1440), W_1440 - WPLUSCOLX4_1440, H_1440),
+            "COL5": Box(COLX5_1440, Y_1440 + (3 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440),
+            "COL6": Box(COLX6_1440, Y_1440 + (3 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440)
+        },
+        "ROW4": {
+            "COL0": Box(COLX0_1440, Y_1440 + (4 * YPLUS_1440), W_1440, H_1440),
+            "COL1": Box(COLX1_1440, Y_1440 + (4 * YPLUS_1440), W_1440, H_1440),
+            "COL2": Box(COLX2_1440, Y_1440 + (4 * YPLUS_1440), W_1440 + WPLUSCOLX2_1440, H_1440),
+            "COL3": Box(COLX3_1440, Y_1440 + (4 * YPLUS_1440), W_1440, H_1440),
+            "COL4": Box(COLX4_1440, Y_1440 + (4 * YPLUS_1440), W_1440 - WPLUSCOLX4_1440, H_1440),
+            "COL5": Box(COLX5_1440, Y_1440 + (4 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440),
+            "COL6": Box(COLX6_1440, Y_1440 + (4 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440)
+        },
+        "ROW5": {
+            "COL0": Box(COLX0_1440, Y_1440 + (5 * YPLUS_1440), W_1440, H_1440),
+            "COL1": Box(COLX1_1440, Y_1440 + (5 * YPLUS_1440), W_1440, H_1440),
+            "COL2": Box(COLX2_1440, Y_1440 + (5 * YPLUS_1440), W_1440 + WPLUSCOLX2_1440, H_1440),
+            "COL3": Box(COLX3_1440, Y_1440 + (5 * YPLUS_1440), W_1440, H_1440),
+            "COL4": Box(COLX4_1440, Y_1440 + (5 * YPLUS_1440), W_1440 - WPLUSCOLX4_1440, H_1440),
+            "COL5": Box(COLX5_1440, Y_1440 + (5 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440),
+            "COL6": Box(COLX6_1440, Y_1440 + (5 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440)
+        },
+        "ROW6": {
+            "COL0": Box(COLX0_1440, Y_1440 + (6 * YPLUS_1440), W_1440, H_1440),
+            "COL1": Box(COLX1_1440, Y_1440 + (6 * YPLUS_1440), W_1440, H_1440),
+            "COL2": Box(COLX2_1440, Y_1440 + (6 * YPLUS_1440), W_1440 + WPLUSCOLX2_1440, H_1440),
+            "COL3": Box(COLX3_1440, Y_1440 + (6 * YPLUS_1440), W_1440, H_1440),
+            "COL4": Box(COLX4_1440, Y_1440 + (6 * YPLUS_1440), W_1440 - WPLUSCOLX4_1440, H_1440),
+            "COL5": Box(COLX5_1440, Y_1440 + (6 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440),
+            "COL6": Box(COLX6_1440, Y_1440 + (6 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440)
+        },
+        "ROW7": {
+            "COL0": Box(COLX0_1440, Y_1440 + (7 * YPLUS_1440), W_1440, H_1440),
+            "COL1": Box(COLX1_1440, Y_1440 + (7 * YPLUS_1440), W_1440, H_1440),
+            "COL2": Box(COLX2_1440, Y_1440 + (7 * YPLUS_1440), W_1440 + WPLUSCOLX2_1440, H_1440),
+            "COL3": Box(COLX3_1440, Y_1440 + (7 * YPLUS_1440), W_1440, H_1440),
+            "COL4": Box(COLX4_1440, Y_1440 + (7 * YPLUS_1440), W_1440 - WPLUSCOLX4_1440, H_1440),
+            "COL5": Box(COLX5_1440, Y_1440 + (7 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440),
+            "COL6": Box(COLX6_1440, Y_1440 + (7 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440)
+        },
+        "ROW8": {
+            "COL0": Box(COLX0_1440, Y_1440 + (8 * YPLUS_1440), W_1440, H_1440),
+            "COL1": Box(COLX1_1440, Y_1440 + (8 * YPLUS_1440), W_1440, H_1440),
+            "COL2": Box(COLX2_1440, Y_1440 + (8 * YPLUS_1440), W_1440 + WPLUSCOLX2_1440, H_1440),
+            "COL3": Box(COLX3_1440, Y_1440 + (8 * YPLUS_1440), W_1440, H_1440),
+            "COL4": Box(COLX4_1440, Y_1440 + (8 * YPLUS_1440), W_1440 - WPLUSCOLX4_1440, H_1440),
+            "COL5": Box(COLX5_1440, Y_1440 + (8 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440),
+            "COL6": Box(COLX6_1440, Y_1440 + (8 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440)
+        },
+        "ROW9": {
+            "COL0": Box(COLX0_1440, Y_1440 + (9 * YPLUS_1440), W_1440, H_1440),
+            "COL1": Box(COLX1_1440, Y_1440 + (9 * YPLUS_1440), W_1440, H_1440),
+            "COL2": Box(COLX2_1440, Y_1440 + (9 * YPLUS_1440), W_1440 + WPLUSCOLX2_1440, H_1440),
+            "COL3": Box(COLX3_1440, Y_1440 + (9 * YPLUS_1440), W_1440, H_1440),
+            "COL4": Box(COLX4_1440, Y_1440 + (9 * YPLUS_1440), W_1440 - WPLUSCOLX4_1440, H_1440),
+            "COL5": Box(COLX5_1440, Y_1440 + (9 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440),
+            "COL6": Box(COLX6_1440, Y_1440 + (9 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440)
+        },
+        "ROW10": {
+            "COL0": Box(COLX0_1440, Y_1440 + (10 * YPLUS_1440), W_1440, H_1440),
+            "COL1": Box(COLX1_1440, Y_1440 + (10 * YPLUS_1440), W_1440, H_1440),
+            "COL2": Box(COLX2_1440, Y_1440 + (10 * YPLUS_1440), W_1440 + WPLUSCOLX2_1440, H_1440),
+            "COL3": Box(COLX3_1440, Y_1440 + (10 * YPLUS_1440), W_1440, H_1440),
+            "COL4": Box(COLX4_1440, Y_1440 + (10 * YPLUS_1440), W_1440 - WPLUSCOLX4_1440, H_1440),
+            "COL5": Box(COLX5_1440, Y_1440 + (10 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440),
+            "COL6": Box(COLX6_1440, Y_1440 + (10 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440)
+        },
+        "ROW11": {
+            "COL0": Box(COLX0_1440, Y_1440 + (11 * YPLUS_1440), W_1440, H_1440),
+            "COL1": Box(COLX1_1440, Y_1440 + (11 * YPLUS_1440), W_1440, H_1440),
+            "COL2": Box(COLX2_1440, Y_1440 + (11 * YPLUS_1440), W_1440 + WPLUSCOLX2_1440, H_1440),
+            "COL3": Box(COLX3_1440, Y_1440 + (11 * YPLUS_1440), W_1440, H_1440),
+            "COL4": Box(COLX4_1440, Y_1440 + (11 * YPLUS_1440), W_1440 - WPLUSCOLX4_1440, H_1440),
+            "COL5": Box(COLX5_1440, Y_1440 + (11 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440),
+            "COL6": Box(COLX6_1440, Y_1440 + (11 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440)
+        },
+        "ROW12": {
+            "COL0": Box(COLX0_1440, Y_1440 + (12 * YPLUS_1440), W_1440, H_1440),
+            "COL1": Box(COLX1_1440, Y_1440 + (12 * YPLUS_1440), W_1440, H_1440),
+            "COL2": Box(COLX2_1440, Y_1440 + (12 * YPLUS_1440), W_1440 + WPLUSCOLX2_1440, H_1440),
+            "COL3": Box(COLX3_1440, Y_1440 + (12 * YPLUS_1440), W_1440, H_1440),
+            "COL4": Box(COLX4_1440, Y_1440 + (12 * YPLUS_1440), W_1440 - WPLUSCOLX4_1440, H_1440),
+            "COL5": Box(COLX5_1440, Y_1440 + (12 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440),
+            "COL6": Box(COLX6_1440, Y_1440 + (12 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440)
+        },
+        "ROW13": {
+            "COL0": Box(COLX0_1440, Y_1440 + (13 * YPLUS_1440), W_1440, H_1440),
+            "COL1": Box(COLX1_1440, Y_1440 + (13 * YPLUS_1440), W_1440, H_1440),
+            "COL2": Box(COLX2_1440, Y_1440 + (13 * YPLUS_1440), W_1440 + WPLUSCOLX2_1440, H_1440),
+            "COL3": Box(COLX3_1440, Y_1440 + (13 * YPLUS_1440), W_1440, H_1440),
+            "COL4": Box(COLX4_1440, Y_1440 + (13 * YPLUS_1440), W_1440 - WPLUSCOLX4_1440, H_1440),
+            "COL5": Box(COLX5_1440, Y_1440 + (13 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440),
+            "COL6": Box(COLX6_1440, Y_1440 + (13 * YPLUS_1440), W_1440 - WPLUSCOLX56_1440, H_1440)
+        }
+    },
+    1080: {
+        "ROW0": {
+            "COL0": Box(X_1080, Y_1080, W_1440, H_1440),
+            "COL1": Box(X_1080, Y_1080, W_1440, H_1440),
+            "COL2": Box(X_1080, Y_1080, W_1440, H_1440)
+        }
+    }
+}
