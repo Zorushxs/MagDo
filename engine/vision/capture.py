@@ -10,20 +10,39 @@ import mss
 import numpy as np
 import cv2
 import os
+from screen_detection import obtener_detalles_monitor
+from boxes_config import BOXES_CONFIG
 
 # ---------- 1) Captura de pantalla ----------
-def capture_screen(monitor_index=1):
+def capture_screen(alto_fisico, monitor_index=1):
     with mss.mss() as sct:
+
+        if not os.path.exists("screenshots/originals"):
+            os.makedirs("screenshots/originals")
+
         monitor = sct.monitors[monitor_index]
         screenshot = sct.grab(monitor)
         img = np.array(screenshot)
         # Convertimos de BGRA a BGR
         img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+
+        save_Path = f"screenshots/originals/{alto_fisico}_screenshot.png"
+        cv2.imwrite(save_Path, img)
+
         return img
 
 # ---------- 2) Pasar a gris ----------
-def to_gray(img):
-    return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+def to_gray(alto_fisico, img):
+
+    if not os.path.exists("screenshots/gray"):
+        os.makedirs("screenshots/gray")
+
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    save_Path = f"screenshots/gray/{alto_fisico}_screenshot.png"
+    cv2.imwrite(save_Path, img)
+
+    return img
 
 # ---------- 3) Recortar un box por píxeles ----------
 def crop_box(img, x, y, w, h):
@@ -36,35 +55,37 @@ def crop_box(img, x, y, w, h):
 
 # ---------- 4) Ejemplo de uso ----------
 if __name__ == "__main__":
+
+    print("Por favor, introduce el número de monitor:")
+    entrada = input() # Captura la entrada como un string (ej: "1")
+    indice_monitor = int(entrada)
+
+    monitor = obtener_detalles_monitor(indice_monitor)
+    alto_fisico = monitor['alto_físico']
+
     # Capturamos la pantalla completa
-    screen = capture_screen()
+    screen = capture_screen(alto_fisico, indice_monitor + 1)
 
     # Convertimos a gris
-    gray_screen = to_gray(screen)
+    gray_screen = to_gray(alto_fisico, screen)
 
-    # Definimos varios boxes estáticos
-    boxes = {
-        "row0": (860, 496, 650, 30),    # x, y, w, h
-        "row1": (100, 200, 150, 50),
-        "row2": (400, 300, 200, 80),    # de momento trabajaré con 2 rows, ver cuantas son necesarias
-        "row3": (400, 300, 200, 80),
-        "row4": (400, 300, 200, 80),
-        "row5": (400, 300, 200, 80),
-        "row6": (400, 300, 200, 80),
-        "row7": (400, 300, 200, 80),
-        "row8": (400, 300, 200, 80),
-        "row9": (400, 300, 200, 80)
-    }
+    # Obtenemos el box
+    boxes = BOXES_CONFIG[alto_fisico]
 
-    # Recortamos y guardamos
-    for name, (x, y, w, h) in boxes.items():
-        if name.startswith("row"):
-            subfolder = "rows"
+    # Iteramos el objeto completo
+    for row_name, columns in boxes.items():
+
+        subfolder = f"boxes/{alto_fisico}/{row_name}"
 
         if not os.path.exists(subfolder):
             os.makedirs(subfolder)
 
-        crop = crop_box(gray_screen, x, y, w, h)
-        save_Path = f"{subfolder}/{name}.png"
-        cv2.imwrite(save_Path, crop)
-        print(f"{name} guardado como {name}.png")
+        for col_name, box_obj in columns.items():
+            x, y, w, h = box_obj.coords
+
+            crop = crop_box(gray_screen, x, y, w, h)
+
+            save_Path = f"{subfolder}/{row_name}_{col_name}.png"
+
+            cv2.imwrite(save_Path, crop)
+            print(f"{alto_fisico} {row_name} {col_name} guardado como {col_name}.png")
