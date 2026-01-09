@@ -14,6 +14,7 @@ from screen_detection import obtener_detalles_monitor
 from boxes_config import BOXES_CONFIG
 import pytesseract
 import time
+from ocr import OCREngine
 
 # ---------- 1) Captura de pantalla ----------
 def capture_screen(alto_fisico, monitor_index=1):
@@ -60,26 +61,12 @@ def gray_debug(alto_fisico, img, x, y, w, h):
     save_Path = f"screenshots/gray_debug/{alto_fisico}_screenshot.png"
     cv2.imwrite(save_Path, img)
 
-# ---------- 5) Ejemplo de uso ----------
-if __name__ == "__main__":
+# ---------- 5) Recortar, reescalar, guardar y leer --
+def crop_rsr(alto_fisico, boxes, gray_screen):
 
-#    print("Por favor, introduce el número de monitor:")
-#    entrada = input() # Captura la entrada como un string (ej: "1")
-#    indice_monitor = int(entrada)
+    # Instanciamos el motor (se carga una vez)
+    ocr = OCREngine()
 
-    monitor = obtener_detalles_monitor(0)
-    alto_fisico = monitor['alto_físico']
-
-    # Capturamos la pantalla completa
-    screen = capture_screen(alto_fisico, 0 + 1)
-
-    # Convertimos a gris
-    gray_screen = to_gray(alto_fisico, screen)
-
-    # Obtenemos el box
-    boxes = BOXES_CONFIG[alto_fisico]
-
-    # Iteramos el objeto completo
     start = time.perf_counter()
     for i, (row_name, columns) in enumerate(boxes.items()):
         if i == 0:
@@ -100,20 +87,38 @@ if __name__ == "__main__":
             crop = crop_box(gray_screen, x, y, w, h)
             gray_debug(alto_fisico, debug_img, x, y, w, h)
 
-            # TODO extract to ocr, and use ocr instead pytesseract due to time
+            # Uso de la api OCR
             recorte_grande = cv2.resize(crop, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
-            texto_completo = pytesseract.image_to_string(
-                recorte_grande,
-                lang="spa+eng",
-                config="--psm 11"
-            ).strip()
+            texto_completo = ocr.read_image(recorte_grande)
 
             print(f"Resultado: {texto_completo}")
-
 
             save_Path = f"{subfolder}/{row_name}_{col_name}.png"
 
             cv2.imwrite(save_Path, recorte_grande)
 
+    ocr.close()
     end = time.perf_counter()
     print(f"Tiempo del bucle: {end - start:.6f} segundos")
+
+
+# ---------- 5) Ejemplo de uso ----------
+if __name__ == "__main__":
+
+#    print("Por favor, introduce el número de monitor:")
+#    entrada = input() # Captura la entrada como un string (ej: "1")
+#    indice_monitor = int(entrada)
+
+    monitor = obtener_detalles_monitor(0)
+    alto_fisico = monitor['alto_físico']
+
+    # Capturamos la pantalla completa
+    screen = capture_screen(alto_fisico, 0 + 1)
+
+    # Convertimos a gris
+    gray_screen = to_gray(alto_fisico, screen)
+
+    # Obtenemos el box
+    boxes = BOXES_CONFIG[alto_fisico]
+
+    crop_rsr(alto_fisico, boxes, gray_screen)
