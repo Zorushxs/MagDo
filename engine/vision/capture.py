@@ -12,6 +12,8 @@ import cv2
 import os
 from screen_detection import obtener_detalles_monitor
 from boxes_config import BOXES_CONFIG
+import pytesseract
+import time
 
 # ---------- 1) Captura de pantalla ----------
 def capture_screen(alto_fisico, monitor_index=1):
@@ -54,7 +56,7 @@ def crop_box(img, x, y, w, h):
 
 # ---------- 4) Reeditar imagen debug ----------------
 def gray_debug(alto_fisico, img, x, y, w, h):
-    cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    cv2.rectangle(img, (x, y), (x + w, y + h), (80, 200, 120), 1)
     save_Path = f"screenshots/gray_debug/{alto_fisico}_screenshot.png"
     cv2.imwrite(save_Path, img)
 
@@ -78,9 +80,10 @@ if __name__ == "__main__":
     boxes = BOXES_CONFIG[alto_fisico]
 
     # Iteramos el objeto completo
+    start = time.perf_counter()
     for i, (row_name, columns) in enumerate(boxes.items()):
         if i == 0:
-            debug_img = gray_screen.copy()
+            debug_img = cv2.cvtColor(gray_screen, cv2.COLOR_GRAY2BGR)
             if not os.path.exists("screenshots/gray_debug"):
                 os.makedirs("screenshots/gray_debug")
             save_Path = f"screenshots/gray_debug/{alto_fisico}_screenshot.png"
@@ -97,6 +100,20 @@ if __name__ == "__main__":
             crop = crop_box(gray_screen, x, y, w, h)
             gray_debug(alto_fisico, debug_img, x, y, w, h)
 
+            # TODO extract to ocr, and use ocr instead pytesseract due to time
+            recorte_grande = cv2.resize(crop, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+            texto_completo = pytesseract.image_to_string(
+                recorte_grande,
+                lang="spa+eng",
+                config="--psm 11"
+            ).strip()
+
+            print(f"Resultado: {texto_completo}")
+
+
             save_Path = f"{subfolder}/{row_name}_{col_name}.png"
 
-            cv2.imwrite(save_Path, crop)
+            cv2.imwrite(save_Path, recorte_grande)
+
+    end = time.perf_counter()
+    print(f"Tiempo del bucle: {end - start:.6f} segundos")
