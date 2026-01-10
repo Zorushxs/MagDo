@@ -12,95 +12,56 @@ import cv2
 import os
 from screen_detection import obtener_detalles_monitor
 from boxes_config import BOXES_CONFIG
-import pytesseract
 import time
 from ocr import OCREngine
 
-# ---------- 1) Captura de pantalla ----------
-def capture_screen(alto_fisico, monitor_index=1):
+# ---------- 1) Captura y Preparación --------
+def get_processed_screen(alto_fisico, monitor_index=1):
     with mss.mss() as sct:
+        # 1. Captura
+        screenshot = sct.grab(sct.monitors[monitor_index])
+        img = cv2.cvtColor(np.array(screenshot), cv2.COLOR_BGRA2BGR) # Convertimos de BGRA a BGR
 
-        if not os.path.exists("screenshots/originals"):
-            os.makedirs("screenshots/originals")
+        # 2. Convertir a gris
+        gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        monitor = sct.monitors[monitor_index]
-        screenshot = sct.grab(monitor)
-        img = np.array(screenshot)
-        # Convertimos de BGRA a BGR
-        img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+        # 3. Guardado único de originales
+        os.makedirs(f"screenshots/originals", exist_ok=True)
+        os.makedirs(f"screenshots/gray", exist_ok=True)
+        cv2.imwrite(f"screenshots/originals/{alto_fisico}_screenshot.png", img)
+        cv2.imwrite(f"screenshots/gray/{alto_fisico}_screenshot.png", gray_img)
 
-        save_Path = f"screenshots/originals/{alto_fisico}_screenshot.png"
-        #cv2.imwrite(save_Path, img)
+        return gray_img
 
-        return img
-
-# ---------- 2) Pasar a gris ----------
-def to_gray(alto_fisico, img):
-
-    if not os.path.exists("screenshots/gray"):
-        os.makedirs("screenshots/gray")
-
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    save_Path = f"screenshots/gray/{alto_fisico}_screenshot.png"
-    #cv2.imwrite(save_Path, img)
-
-    return img
-
-# ---------- 3) Recortar un box por píxeles ----------
-def crop_box(img, x, y, w, h):
-    """
-    img: numpy array
-    x, y: coordenadas superior izquierda
-    w, h: ancho y alto del box
-    """
-    return img[y:y+h, x:x+w]
-
-# ---------- 4) Reeditar imagen debug ----------------
-def gray_debug(alto_fisico, img, x, y, w, h):
-    cv2.rectangle(img, (x, y), (x + w, y + h), (80, 200, 120), 1)
-    save_Path = f"screenshots/gray_debug/{alto_fisico}_screenshot.png"
-    #cv2.imwrite(save_Path, img)
-
-# ---------- 5) Recortar, reescalar, guardar y leer --
+# ---------- 3) Recortar, reescalar, guardar y leer --
 def crop_rsr(alto_fisico, boxes, gray_screen):
 
-    # Instanciamos el motor (se carga una vez)
-    ocr = OCREngine()
+    debug_img = cv2.cvtColor(gray_screen, cv2.COLOR_GRAY2BGR)
+    os.makedirs(f"screenshots/gray_debug", exist_ok=True)
 
     start = time.perf_counter()
-    for i, (row_name, columns) in enumerate(boxes.items()):
-        if i == 0:
-            debug_img = cv2.cvtColor(gray_screen, cv2.COLOR_GRAY2BGR)
-            if not os.path.exists("screenshots/gray_debug"):
-                os.makedirs("screenshots/gray_debug")
-            save_Path = f"screenshots/gray_debug/{alto_fisico}_screenshot.png"
-            #cv2.imwrite(save_Path, debug_img)
+    with OCREngine() as ocr:
+        for row_name, columns in boxes.items():
+            subfolder = f"boxes/{alto_fisico}/{row_name}"
+            os.makedirs(subfolder, exist_ok=True)
 
-        subfolder = f"boxes/{alto_fisico}/{row_name}"
+            for col_name, box_obj in columns.items():
+                x, y, w, h = box_obj.coords
 
-        if not os.path.exists(subfolder):
-            os.makedirs(subfolder)
+                cv2.rectangle(debug_img, (x, y), (x + w, y + h), (80, 200, 120), 1)
 
-        for col_name, box_obj in columns.items():
-            x, y, w, h = box_obj.coords
+                # Uso de la api OCR
+                crop = gray_screen[y:y+h, x:x+w]
+                recorte_grande = cv2.resize(crop, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+                texto_completo = ocr.read_image(recorte_grande)
+                print(f"Resultado: {texto_completo}")
 
-            crop = crop_box(gray_screen, x, y, w, h)
-            gray_debug(alto_fisico, debug_img, x, y, w, h)
+                cv2.imwrite(f"{subfolder}/{row_name}_{col_name}.png", recorte_grande)
 
-            # Uso de la api OCR
-            recorte_grande = cv2.resize(crop, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
-            texto_completo = ocr.read_image(recorte_grande)
+        cv2.imwrite(f"screenshots/gray_debug/{alto_fisico}_screenshot.png", debug_img)
 
-            print(f"Resultado: {texto_completo}")
-
-            save_Path = f"{subfolder}/{row_name}_{col_name}.png"
-
-            #cv2.imwrite(save_Path, recorte_grande)
-
-    ocr.close()
     end = time.perf_counter()
     print(f"Tiempo del bucle: {end - start:.6f} segundos")
-
 
 # ---------- 5) Ejemplo de uso ----------
 if __name__ == "__main__":
@@ -112,11 +73,8 @@ if __name__ == "__main__":
     monitor = obtener_detalles_monitor(0)
     alto_fisico = monitor['alto_físico']
 
-    # Capturamos la pantalla completa
-    screen = capture_screen(alto_fisico, 0 + 1)
-
-    # Convertimos a gris
-    gray_screen = to_gray(alto_fisico, screen)
+    # Capturamos la pantalla completa y convertimos a gris
+    gray_screen = get_processed_screen(alto_fisico, 0 + 1)
 
     # Obtenemos el box
     boxes = BOXES_CONFIG[alto_fisico]

@@ -13,13 +13,10 @@ import os
 class OCREngine:
     def __init__(self, lang='spa+eng'):
         # Ruta calculada automáticamente para encontrar tessdata
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        tessdata_path = os.path.join(script_dir, '../tesseract/Tesseract-OCR/tessdata')
-        # Convertimos la ruta combinada en la ruta absoluta final
-        final_tessdata_path = os.path.abspath(tessdata_path)
+        base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../tesseract/Tesseract-OCR/tessdata'))
 
         # Iniciamos el motor una sola vez al crear la clase
-        self.api = tesserocr.PyTessBaseAPI(path=final_tessdata_path, lang=lang, psm=tesserocr.PSM.SPARSE_TEXT) # psm=tesserocr.PSM.SINGLE_BLOCK
+        self.api = tesserocr.PyTessBaseAPI(path=base_path, lang=lang, psm=tesserocr.PSM.SPARSE_TEXT) # psm=tesserocr.PSM.SINGLE_BLOCK
 
     def read_image(self, opencv_img):
         # Convertimos de OpenCV (numpy) a PIL
@@ -29,3 +26,10 @@ class OCREngine:
 
     def close(self):
         self.api.End()
+
+        # Esto permite usar: with OCREngine() as ocr:
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
