@@ -27,7 +27,7 @@ class OCREngine:
     def close(self):
         self.api.End()
 
-        # Esto permite usar: with OCREngine() as ocr:
+    # Esto permite usar: with OCREngine() as ocr:
     def __enter__(self):
         return self
 
