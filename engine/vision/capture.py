@@ -30,7 +30,7 @@ def capture_screen(alto_fisico, monitor_index=1):
         img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
 
         save_Path = f"screenshots/originals/{alto_fisico}_screenshot.png"
-        cv2.imwrite(save_Path, img)
+        #cv2.imwrite(save_Path, img)
 
         return img
 
@@ -42,7 +42,7 @@ def to_gray(alto_fisico, img):
 
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     save_Path = f"screenshots/gray/{alto_fisico}_screenshot.png"
-    cv2.imwrite(save_Path, img)
+    #cv2.imwrite(save_Path, img)
 
     return img
 
@@ -59,7 +59,7 @@ def crop_box(img, x, y, w, h):
 def gray_debug(alto_fisico, img, x, y, w, h):
     cv2.rectangle(img, (x, y), (x + w, y + h), (80, 200, 120), 1)
     save_Path = f"screenshots/gray_debug/{alto_fisico}_screenshot.png"
-    cv2.imwrite(save_Path, img)
+    #cv2.imwrite(save_Path, img)
 
 # ---------- 5) Recortar, reescalar, guardar y leer --
 def crop_rsr(alto_fisico, boxes, gray_screen):
@@ -74,7 +74,7 @@ def crop_rsr(alto_fisico, boxes, gray_screen):
             if not os.path.exists("screenshots/gray_debug"):
                 os.makedirs("screenshots/gray_debug")
             save_Path = f"screenshots/gray_debug/{alto_fisico}_screenshot.png"
-            cv2.imwrite(save_Path, debug_img)
+            #cv2.imwrite(save_Path, debug_img)
 
         subfolder = f"boxes/{alto_fisico}/{row_name}"
 
@@ -95,7 +95,7 @@ def crop_rsr(alto_fisico, boxes, gray_screen):
 
             save_Path = f"{subfolder}/{row_name}_{col_name}.png"
 
-            cv2.imwrite(save_Path, recorte_grande)
+            #cv2.imwrite(save_Path, recorte_grande)
 
     ocr.close()
     end = time.perf_counter()
