@@ -12,3 +12,34 @@
 
 # Deberia mediante los datos guardados u obtenidos en memoria saber los límites de los stats del ítem y según las
 # preferencias introducidas proceder a dar órdenes de una accion u otra al script de actions
+
+#  leer estado (interpretacion de la lectura, minimos y maximos y entender como se encuentran los stats del objeto)
+#  guardar variables para saber que arreglar e irlas actualizando
+#  bucle iterativo
+#  	ver que tiene más prioridad a la hora de querer arreglar
+#  		aquí es donde, si se usa, de deben usar los restos para calcular cuanto puede "petar" el objeto
+#  		para saber que tiene más prioridad usar variable que defina que cual es el stat sobre el que quieres actuar
+#  		aqui hay que codificar que si se cumplen las condiciones requeridas no hace falta seguir -> usar el booleano
+#  	mandar la orden de arreglar lo que tiene más prioridad
+#  	actualizar estados para saber como proceder en la siguiente iteracion
+#  		entre ellos la variable que define el stat sobre el que quieres actuar
+#  		otra variable a actualizar es el tier de la runa, evaluar cual meter segun el valor actual y el rango.
+#  		los restos
+
+# a ver como creo el metodo y la estructura de datos que contendrá la informacion para actuar sobre dofus para subir el stat.
+# opcion 1
+#   metodo:
+#       este metodo recibira un stat como "fuerza" y sabrá en que row está, porque durante la lectura se habrá actualizado la estructura de datos con los datos leidos con ocr.
+#       Con esta info podra realizar la accion pedida. Aqui metera runas tier 1, 2 o 3 según o se le defina en la entrada o puedo hacer que se defina aqui dentro. Debido a que es un 	script de actuacion, seria más lógico que venga definido en la entrada el tier de la runa.
+#   estructura de datos:
+#       set tipo
+#       stat "fuerza"
+#       row "1"
+#       tier runa "2"
+#   set exo tipo
+#       stat "PA"
+#       row "0" al principio no habra valor, pero si entra en la lectura se seteará y modificara el booleano de parar magueo
+#       tier runa "1" podra ser cualquiera pero la gran mayoria de veces será 1
+#   stat que quiero actualizar
+#   restos
+#   booleano para definir si se sigue o no magueando
