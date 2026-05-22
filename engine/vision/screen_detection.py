@@ -10,7 +10,7 @@ class MONITORINFO(ctypes.Structure):
     ]
 
 
-def obtener_detalles_monitor(indice_monitor):
+def monitor_details(indice_monitor):
 
     # 1. Avisar a Windows que queremos los píxeles reales
     ctypes.windll.shcore.SetProcessDpiAwareness(1)

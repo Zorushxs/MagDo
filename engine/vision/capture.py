@@ -10,7 +10,7 @@ import mss
 import numpy as np
 import cv2
 import os
-from screen_detection import obtener_detalles_monitor
+from screen_detection import monitor_details
 from boxes_config import BOXES_CONFIG
 import time
 from ocr import OCREngine
@@ -33,7 +33,7 @@ def get_processed_screen(alto_fisico, monitor_index=1):
 
         return gray_img
 
-# ---------- 3) Recortar, reescalar, guardar y leer --
+# ---------- 3) Recortar, reescalar, guardar (img) y, leer y guardar (texto) --
 def crop_rsr(alto_fisico, boxes, gray_screen):
 
     debug_img = cv2.cvtColor(gray_screen, cv2.COLOR_GRAY2BGR)
@@ -58,6 +58,8 @@ def crop_rsr(alto_fisico, boxes, gray_screen):
 
                 cv2.imwrite(f"{subfolder}/{row_name}_{col_name}.png", recorte_grande)
 
+            # función para crear hash map temporal de una sola iteración (se crea una fila por iteración)... (más cosas, queda pendiente aquí)
+
         cv2.imwrite(f"screenshots/gray_debug/{alto_fisico}_screenshot.png", debug_img)
 
     end = time.perf_counter()
@@ -70,7 +72,7 @@ if __name__ == "__main__":
 #    entrada = input() # Captura la entrada como un string (ej: "1")
 #    indice_monitor = int(entrada)
 
-    monitor = obtener_detalles_monitor(0)
+    monitor = monitor_details(0)
     alto_fisico = monitor['alto_físico']
 
     # Capturamos la pantalla completa y convertimos a gris
