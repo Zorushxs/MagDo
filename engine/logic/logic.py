@@ -17,20 +17,23 @@
 #  guardar variables para saber que arreglar e irlas actualizando
 #  bucle iterativo
 #  	ver que tiene más prioridad a la hora de querer arreglar
-#  		aquí es donde, si se usa, de deben usar los restos para calcular cuanto puede "petar" el objeto
-#  		para saber que tiene más prioridad usar variable que defina que cual es el stat sobre el que quieres actuar
-#  		aqui hay que codificar que si se cumplen las condiciones requeridas no hace falta seguir -> usar el booleano
-#  	mandar la orden de arreglar lo que tiene más prioridad
+#  		aquí es donde, si se usa, se deben usar los restos para calcular cuanto puede "petar" el objeto
+#  		para saber que tiene más prioridad usar variable que defina que cuál es el stat sobre el que quieres actuar
+#  		aquí hay que codificar que si se cumplen las condiciones requeridas no hace falta seguir -> usar el booleano
+#  	    mandar la orden de arreglar lo que tiene más prioridad
 #  	actualizar estados para saber como proceder en la siguiente iteracion
 #  		entre ellos la variable que define el stat sobre el que quieres actuar
-#  		otra variable a actualizar es el tier de la runa, evaluar cual meter segun el valor actual y el rango.
+#  		otra variable a actualizar es el tier de la runa, evaluar cuál meter según el valor actual y el rango.
 #  		los restos
 
-# a ver como creo el metodo y la estructura de datos que contendrá la informacion para actuar sobre dofus para subir el stat.
+# a ver como creo el metodo y la estructura de datos que contendrá la información para actuar sobre dofus para subir el stat.
 # opcion 1
 #   metodo:
-#       este metodo recibira un stat como "fuerza" y sabrá en que row está, porque durante la lectura se habrá actualizado la estructura de datos con los datos leidos con ocr.
-#       Con esta info podra realizar la accion pedida. Aqui metera runas tier 1, 2 o 3 según o se le defina en la entrada o puedo hacer que se defina aqui dentro. Debido a que es un 	script de actuacion, seria más lógico que venga definido en la entrada el tier de la runa.
+#       este metodo recibira un stat como "fuerza" y sabrá en que row está, porque durante la lectura se habrá actualizado
+#       la estructura de datos con los datos leidos con ocr.
+#       Con esta info podra realizar la accion pedida. Aquí metera runas tier 1, 2 o 3 según o se le defina en la
+#       entrada o puedo hacer que se defina aquí dentro. Debido a que es un script de actuacion, sería más lógico que
+#       venga definido en la entrada el tier de la runa.
 #   estructura de datos:
 #       set tipo
 #       stat "fuerza"
