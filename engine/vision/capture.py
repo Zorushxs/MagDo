@@ -14,6 +14,7 @@ from screen_detection import monitor_details
 from boxes_config import BOXES_CONFIG
 import time
 from ocr import OCREngine
+from capture_data import save_capture_data
 
 # ---------- 1) Captura y Preparación --------
 def get_processed_screen(alto_fisico, monitor_index=1):
@@ -45,6 +46,7 @@ def crop_rsr(alto_fisico, boxes, gray_screen):
             subfolder = f"boxes/{alto_fisico}/{row_name}"
             os.makedirs(subfolder, exist_ok=True)
 
+            row = []
             for col_name, box_obj in columns.items():
                 x, y, w, h = box_obj.coords
 
@@ -54,11 +56,12 @@ def crop_rsr(alto_fisico, boxes, gray_screen):
                 crop = gray_screen[y:y+h, x:x+w]
                 recorte_grande = cv2.resize(crop, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
                 texto_completo = ocr.read_image(recorte_grande)
+                row.append(texto_completo)
                 print(f"Resultado: {texto_completo}")
 
                 cv2.imwrite(f"{subfolder}/{row_name}_{col_name}.png", recorte_grande)
 
-            # función para crear hash map temporal de una sola iteración (se crea una fila por iteración)... (más cosas, queda pendiente aquí)
+            save_capture_data(row, row_name)
 
         cv2.imwrite(f"screenshots/gray_debug/{alto_fisico}_screenshot.png", debug_img)
 
