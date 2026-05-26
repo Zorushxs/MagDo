@@ -5,7 +5,7 @@ from pprint import pprint
 COLS = [
     "minStat",
     "maxStat",
-    "statNumber",
+    "statValue",
     "statName",
     "modificationState",
     "runeTier1",
@@ -19,12 +19,12 @@ current_data = {}
 def save_capture_data(row, row_name):
     global current_data
 
-    stat_number, stat_name = parse_current_stat(row[2])
+    stat_value, stat_name = parse_current_stat(row[2])
 
     new_row = [
         row[0],              # minStat
         row[1],              # maxStat
-        stat_number,         # statNumber
+        stat_value,          # statValue
         stat_name,           # statName
         row[3],              # modificationState
         row[4],              # smallRune
@@ -52,7 +52,7 @@ def parse_current_stat(text):
     while i < len(text) and text[i].isdigit():
         i += 1
 
-    stat_number = text[:i]
+    stat_value = text[:i]
     stat_name = text[i:].strip()
 
-    return stat_number, stat_name
+    return stat_value, stat_name
