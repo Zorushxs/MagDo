@@ -41,8 +41,8 @@
 #           tier runa "2"
 #       set exo tipo
 #           stat "PA"
-#           row "0" al principio no habra valor, pero si entra en la lectura se seteará y modificara el booleano de parar magueo
-#           tier runa "1" podra ser cualquiera pero la gran mayoria de veces será 1
+#           row "0" al principio no habrá valor, pero si entra en la lectura se seteará y modificará el booleano de parar magueo
+#           tier runa "1" podrá ser cualquiera pero la gran mayoria de veces será 1
 #   stat que quiero actualizar
 #   restos
 #   booleano para definir si se sigue o no magueando
