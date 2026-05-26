@@ -8,9 +8,9 @@ COLS = [
     "statNumber",
     "statName",
     "modificationState",
-    "smallRune",
-    "mediumRune",
-    "bigRune"
+    "runeTier1",
+    "runeTier2",
+    "runeTier3"
 ]
 
 current_data = {}
