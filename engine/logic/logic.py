@@ -36,13 +36,13 @@
 #       venga definido en la entrada el tier de la runa.
 #   estructura de datos:
 #       set tipo
-#       stat "fuerza"
-#       row "1"
-#       tier runa "2"
-#   set exo tipo
-#       stat "PA"
-#       row "0" al principio no habra valor, pero si entra en la lectura se seteará y modificara el booleano de parar magueo
-#       tier runa "1" podra ser cualquiera pero la gran mayoria de veces será 1
+#           stat "fuerza"
+#           row "1"
+#           tier runa "2"
+#       set exo tipo
+#           stat "PA"
+#           row "0" al principio no habra valor, pero si entra en la lectura se seteará y modificara el booleano de parar magueo
+#           tier runa "1" podra ser cualquiera pero la gran mayoria de veces será 1
 #   stat que quiero actualizar
 #   restos
 #   booleano para definir si se sigue o no magueando
