@@ -10,11 +10,11 @@ import mss
 import numpy as np
 import cv2
 import os
-from screen_detection import monitor_details
-from boxes_config import BOXES_CONFIG
 import time
 from ocr import OCREngine
-from capture_data import save_capture_data
+from engine.vision.boxes_config import BOXES_CONFIG
+from engine.vision.capture_data import save_capture_data
+from engine.vision.screen_detection import monitor_details
 
 # ---------- 1) Captura y Preparación --------
 def get_processed_screen(alto_fisico, monitor_index=1):
