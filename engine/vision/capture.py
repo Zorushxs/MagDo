@@ -11,10 +11,13 @@ import numpy as np
 import cv2
 import os
 import time
-from ocr import OCREngine
+from engine.vision.ocr import OCREngine
 from engine.vision.boxes_config import BOXES_CONFIG
 from engine.vision.capture_data import save_capture_data
 from engine.vision.screen_detection import monitor_details
+
+SCREENSHOTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "screenshots")
+BOXES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "boxes")
 
 # ---------- 1) Captura y Preparación --------
 def get_processed_screen(alto_fisico, monitor_index=1):
@@ -27,10 +30,10 @@ def get_processed_screen(alto_fisico, monitor_index=1):
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
         # 3. Guardado único de originales
-        os.makedirs(f"screenshots/originals", exist_ok=True)
-        os.makedirs(f"screenshots/gray", exist_ok=True)
-        cv2.imwrite(f"screenshots/originals/{alto_fisico}_screenshot.png", img)
-        cv2.imwrite(f"screenshots/gray/{alto_fisico}_screenshot.png", gray_img)
+        os.makedirs(os.path.join(SCREENSHOTS_DIR, "originals"), exist_ok=True)
+        os.makedirs(os.path.join(SCREENSHOTS_DIR, "gray"), exist_ok=True)
+        cv2.imwrite(os.path.join(SCREENSHOTS_DIR, "originals", f"{alto_fisico}_screenshot.png"), img)
+        cv2.imwrite(os.path.join(SCREENSHOTS_DIR, "gray", f"{alto_fisico}_screenshot.png"), gray_img)
 
         return gray_img
 
@@ -38,12 +41,12 @@ def get_processed_screen(alto_fisico, monitor_index=1):
 def crop_rsr(alto_fisico, boxes, gray_screen):
 
     debug_img = cv2.cvtColor(gray_screen, cv2.COLOR_GRAY2BGR)
-    os.makedirs(f"screenshots/gray_debug", exist_ok=True)
+    os.makedirs(os.path.join(SCREENSHOTS_DIR, "gray_debug"), exist_ok=True)
 
     start = time.perf_counter()
     with OCREngine() as ocr:
         for row_name, columns in boxes.items():
-            subfolder = f"boxes/{alto_fisico}/{row_name}"
+            subfolder = os.path.join(BOXES_DIR, str(alto_fisico), row_name)
             os.makedirs(subfolder, exist_ok=True)
 
             row = []
@@ -59,11 +62,11 @@ def crop_rsr(alto_fisico, boxes, gray_screen):
                 row.append(texto_completo)
                 print(f"Resultado: {texto_completo}")
 
-                cv2.imwrite(f"{subfolder}/{row_name}_{col_name}.png", recorte_grande)
+                cv2.imwrite(os.path.join(subfolder, f"{row_name}_{col_name}.png"), recorte_grande)
 
             save_capture_data(row, row_name)
 
-        cv2.imwrite(f"screenshots/gray_debug/{alto_fisico}_screenshot.png", debug_img)
+        cv2.imwrite(os.path.join(SCREENSHOTS_DIR, "gray_debug", f"{alto_fisico}_screenshot.png"), debug_img)
 
     end = time.perf_counter()
     print(f"Tiempo del bucle: {end - start:.6f} segundos")
