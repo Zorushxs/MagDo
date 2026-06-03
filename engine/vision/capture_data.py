@@ -41,6 +41,7 @@ def save_capture_data(row, row_name):
         pprint(current_data, sort_dicts=False)
 
         map_data(current_data)
+        current_data = {}
 
 
 def parse_current_stat(text):
